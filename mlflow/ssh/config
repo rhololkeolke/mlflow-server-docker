@@ -1,0 +1,5 @@
+Host mlflow.bluetang
+     Hostname sftp
+     Port 22
+     User mlflow
+     IdentityFile ~/.ssh/id_rsa

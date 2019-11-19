@@ -1,0 +1,34 @@
+version: '3'
+services:
+  sftp:
+    image: "atmoz/sftp:alpine"
+    volumes:
+      - ${SFTP_ED25519_KEY:-/etc/ssh/ssh_host_ed25519_key}:/etc/ssh/ssh_host_ed25519_key:ro
+      - ${SFTP_RSA_KEY:-/etc/ssh/ssh_host_rsa_key}:/etc/ssh/ssh_host_rsa_key:ro
+      - ${SFTP_ECDSA_KEY:-/etc/ssh/ssh_host_ecdsa_key}:/etc/ssh/ssh_host_ecdsa_key:ro
+      - ./sshd_config:/etc/ssh/sshd_config
+      - ./pub_keys:/home/mlflow/.ssh/keys
+      - ${MLFLOW_DIR}/artifacts:/home/mlflow/artifacts
+    command: mlflow:${SFTP_PASS}:::artifacts
+    ports:
+      - "2222:22"
+  postgres:
+    image: "postgres:latest"
+    environment:
+      - POSTGRES_PASSWORD
+    ports:
+      - "5432:5432"
+    volumes:
+      - ${MLFLOW_DIR}/database:/var/lib/postgresql/data
+  mlflow:
+    build: mlflow
+    environment:
+      - POSTGRES_PASSWORD
+      - MLFLOW_DEFAULT_ARTIFACT_ROOT=sftp://${SFTP_HOST}/artifacts
+    ports:
+      - "5000:5000"
+    volumes:
+      - ${MLFLOW_DIR}/artifacts:/var/mlflow/artifacts
+    links:
+      - "postgres:postgres"
+      - "sftp:sftp"
