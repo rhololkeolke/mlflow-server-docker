@@ -45,6 +45,19 @@ Host mlflow
 	 IdentityFile ~/.ssh/mlflow
 ```
 
+## HTTPS
+
+The server assumes a letsencrypt ssl cert. Generate the cert using
+certbot on the command line (see the letsencrypt docs).
+
+You will need to modify the nginx conf to match your hostname. This
+will setup a server with http on the standard mlflow port 5000 which
+has a 301 redirect to the https proxied version on port 5001. If you
+have already been runnning mlflow manually on port 5000 you may need
+to force a hard refresh in the browser so that the cached homepage is
+not used. (Generally done by shift-clicking on the browser refresh
+button or clearing cache in the settings.)
+
 ## Launching
 
 You must provide the following environment variables when launching:
