@@ -58,6 +58,30 @@ to force a hard refresh in the browser so that the cached homepage is
 not used. (Generally done by shift-clicking on the browser refresh
 button or clearing cache in the settings.)
 
+## Authentication
+
+You will need to generate an HTTP auth file so that access to the
+server is restricted. On ubuntu:
+
+``` shell
+sudo apt install -y apache2-utils
+htpasswd -c htpasswd <username>
+```
+
+Enter your password when prompted.
+
+To add a user:
+
+``` shell
+htpasswd htpasswd <username>
+```
+
+To remove a user:
+
+``` shell
+htpasswd -D htpasswd <username>
+```
+
 ## Launching
 
 You must provide the following environment variables when launching:
